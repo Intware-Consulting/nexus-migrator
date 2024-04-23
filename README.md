@@ -1,11 +1,10 @@
 # nexus-migrator
 <img src="docs/nexus-migrator-banner.jpeg" width="400">
 
-
-Application can be used to `download` and `upload` raw Nexus repositories.
+The application can be used to `download` and `upload` raw Nexus repositories.
 
 ## Configuration
-By default application search for configuration file in the same directory. The file should be named `nexus.conf`:
+By default, the application searches for the configuration file in the same directory. The file should be called `nexus.conf`:
 ```json
 {
     "nexus": "https://nexus.intware.eu",
@@ -15,7 +14,7 @@ By default application search for configuration file in the same directory. The 
     "level": "info"
 }
 ```
-If `nexus.conf` isn't found, application will read environment variables:
+If `nexus.conf` isn't found, the application will read environment variables:
 ```shell
 NEXUS="https://nexus.intware.eu"
 USER="api"
@@ -34,13 +33,13 @@ Possible configuration properties:
 ## How to use it
 
 ### Download repository
-In order remote raw Nexus repository to local directory:
+To download the remote Nexus raw repository to a local directory:
 ```shell
 ./nexus-migrator download -s software -t /tmp
 ```
 
 ### Upload repository
-In order to upload local directory to raw Nexus repository:
+Upload a local directory to the Nexus raw repository:
 ```shell
 ./nexus-migrator upload -s /tmp -t software
 ```
