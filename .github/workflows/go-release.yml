@@ -1,0 +1,57 @@
+# This workflow will build a golang project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  go-release:
+    name: Go Release
+    runs-on: ubuntu-latest
+    permissions: write-all
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Semantic versioning
+      uses: paulhatch/semantic-version@v5.4.0
+      id: semver
+      with:
+        tag_prefix: "v"
+        enable_prerelease_mode: true
+        debug: false
+
+    - name: Log version
+      run: |
+        echo "::notice::Version: v${{ steps.semver.outputs.version }}"
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.22'
+
+    - name: Build
+      run: CGO_ENABLED=0 go build -ldflags="-w -s" -gcflags=all="-l -B"
+
+    - name: List contents
+      run: ls -l
+
+    - name: Fix git repository ownership
+      run: |
+        # Fix for GIT repo ownership
+        chown -R $(id -u):$(id -g) $PWD
+
+    - name: Create GitHub Release
+      run: |
+        gh release create ${{ steps.semver.outputs.version_tag }} -t ${{ steps.semver.outputs.version_tag }} --generate-notes ./nexus-migrator
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
